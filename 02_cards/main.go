@@ -18,7 +18,10 @@ import (
  - float64
 */
 func main() {
+	// deck initialization
 	cards := newDeck()
+
+	// deal
 	hand, remainingCards := cards.deal(5)
 	// hand, remainingCards := deal(cards, 5)
 
@@ -26,9 +29,20 @@ func main() {
 	hand.print()
 	fmt.Println("Rest:")
 	remainingCards.print()
+
+	// save to file
 	err := remainingCards.save("remain.deck")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// read from file
+	savedCards := loadDeck("remain.deck")
+	fmt.Println("From file:")
+	savedCards.print()
+
+	// shuffle
+	savedCards.shuffle()
+	fmt.Println("Shuffled:")
+	savedCards.print()
 }

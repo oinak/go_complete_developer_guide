@@ -3,11 +3,16 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
+	"os"
 	"strings"
+	"time"
 )
 
 // Deck is a slice of strings
 type deck []string
+
+const separator = ","
 
 func newDeck() deck {
 	cards := deck{}
@@ -36,9 +41,39 @@ func (d deck) toString() string {
 	// we could do
 	// s := []strings(d)
 	// to use proper types but it's not needed
-	return strings.Join(d, ",")
+	return strings.Join(d, separator)
 }
 
 func (d deck) save(filename string) error {
 	return ioutil.WriteFile(filename, []byte(d.toString()), 0644)
+}
+
+func loadDeck(filename string) deck {
+	bs, err := ioutil.ReadFile(filename)
+	if err != nil {
+		// Option 1: log error and retunr newDeck
+		// Option 2: log error and entirely quit program
+		fmt.Println("Error: ", err)
+		os.Exit(1)
+	}
+	ss := strings.Split(string(bs), separator)
+	cards := deck(ss)
+	return cards
+}
+
+func (d deck) shuffle() {
+	r := shuffler()
+	for i := range d {
+		newPosition := r.Intn(len(d) - 1)
+		d[i], d[newPosition] = d[newPosition], d[i]
+	}
+}
+
+// course does not separate this func but I feel like it
+// this is needed to avoid having the same pseudo random shuffling every time
+func shuffler() *rand.Rand {
+	t := time.Now().UnixNano()
+	src := rand.NewSource(t)
+	r := rand.New(src)
+	return r
 }
