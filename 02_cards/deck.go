@@ -62,11 +62,15 @@ func loadDeck(filename string) deck {
 }
 
 func (d deck) shuffle() {
-	r := shuffler()
-	for i := range d {
-		newPosition := r.Intn(len(d) - 1)
-		d[i], d[newPosition] = d[newPosition], d[i]
-	}
+	/*
+		r := shuffler()
+		for i := range d {
+			newPosition := r.Intn(len(d) - 1)
+			d[i], d[newPosition] = d[newPosition], d[i]
+		}
+	*/
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(d), func(i, j int) { d[i], d[j] = d[j], d[i] })
 }
 
 // course does not separate this func but I feel like it
