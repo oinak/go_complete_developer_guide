@@ -27,13 +27,22 @@ func TestNewDeck(t *testing.T) {
 
 func TestSaveAndLoadDeck(t *testing.T) {
 	testFileName := "_decktesting"
+
+	// in case it's laying around from previous execution
 	os.Remove(testFileName)
+
+	// setup
 	d := newDeck()
 	d.save(testFileName)
+
+	// exert
 	loadedDeck := loadDeck(testFileName)
+
+	// assert
 	if len(loadedDeck) != 16 {
 		t.Errorf("Expected deck lenght of 16, but got %v", len(d))
 	}
-	os.Remove(testFileName)
 
+	// teardown clean after ourselves
+	os.Remove(testFileName)
 }
